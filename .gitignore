@@ -1,0 +1,8 @@
+*.sln
+*.txt
+packages/
+*.csproj
+bin/
+obj/
+Properties/
+fonts/
