@@ -1,0 +1,17 @@
+CREATE TABLE [dbo].[Enrollees] (
+    [EnrolleeId]      INT             IDENTITY (1, 1) NOT NULL,
+    [Name]            NVARCHAR (50)   NOT NULL,
+    [Surname]         NVARCHAR (50)   NOT NULL,
+    [Patronymic]      NVARCHAR (50)   NOT NULL,
+    [Passport]        NVARCHAR (50)   NOT NULL,
+    [BirthDate]       DATE            NOT NULL,
+    [Town]            NVARCHAR (50)   NOT NULL,
+    [Address]         NVARCHAR (50)   NOT NULL,
+    [PhoneNumber]     NVARCHAR (50)   NOT NULL,
+    [CTLanguage]      INT             NULL,
+    [CTFirstSubject]  INT             NULL,
+    [CTSecondSubject] INT             NULL,
+    [AverageScore]    DECIMAL (17, 1) NOT NULL,
+    PRIMARY KEY CLUSTERED ([EnrolleeId] ASC)
+);
+
