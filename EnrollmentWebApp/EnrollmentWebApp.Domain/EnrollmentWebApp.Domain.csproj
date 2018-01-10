@@ -81,6 +81,9 @@
     <Compile Include="Concrete\EFDataRepository.cs" />
     <Compile Include="Concrete\EFDbContext.cs" />
     <Compile Include="Entities\Enrollee.cs" />
+    <Compile Include="Entities\Faculty.cs" />
+    <Compile Include="Entities\Speciality.cs" />
+    <Compile Include="Entities\TreeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

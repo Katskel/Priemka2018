@@ -20,6 +20,31 @@ namespace EnrollmentWebApp.Domain.Concrete
             }
         }
 
+        public IEnumerable<TreeNode> TreeNodes
+        {
+            get
+            {
+                return context.TreeNodes;
+            }
+        }
+
+        public IEnumerable<Faculty> Faculties
+        {
+            get
+            {
+                return context.Faculties;
+            }
+        }
+
+        public IEnumerable<Speciality> Specialities
+        {
+            get
+            {
+                return context.Specialities;
+            }
+        }
+
+
         public void SaveEnrollee(Enrollee enrollee)
         {
             if (enrollee.EnrolleeId == 0)
