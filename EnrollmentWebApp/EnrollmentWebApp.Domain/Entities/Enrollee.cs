@@ -19,6 +19,8 @@ namespace EnrollmentWebApp.Domain.Entities
         [Required(ErrorMessage = "Please enter your passport number")]
         public string Passport { get; set; }
         [Required(ErrorMessage = "Please enter your birthdate")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime BirthDate { get; set; }
         [Required(ErrorMessage = "Please enter your town")]
         public string Town { get; set; }
@@ -36,5 +38,6 @@ namespace EnrollmentWebApp.Domain.Entities
         [Required(ErrorMessage = "Please enter your average score in school")]
         [Range(0, 10.0, ErrorMessage = "Please enter average score in 0..10 interval")]
         public decimal AverageScore { get; set; }
+        public int SpecialityId { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using EnrollmentWebApp.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,11 +29,11 @@ namespace EnrollmentWebApp.Domain.Concrete
             }
         }
 
-        public IEnumerable<Faculty> Faculties
+        public IEnumerable<SpecialityInfo> SpecialityInfo
         {
             get
             {
-                return context.Faculties;
+                return context.SpecialityInfo;
             }
         }
 
@@ -68,6 +69,7 @@ namespace EnrollmentWebApp.Domain.Concrete
                     dbEntry.CTFirstSubject = enrollee.CTFirstSubject;
                     dbEntry.CTSecondSubject = enrollee.CTSecondSubject;
                     dbEntry.AverageScore = enrollee.AverageScore;
+                    dbEntry.SpecialityId = enrollee.SpecialityId;
                 }
             }
             context.SaveChanges();
@@ -81,6 +83,22 @@ namespace EnrollmentWebApp.Domain.Concrete
                 context.SaveChanges();
             }
             return dbEntry;
+        }
+
+        public void AddSpeciality(Speciality speciality)
+        {
+            Speciality dbSpeciality = context.Specialities.Find(speciality.Id);
+            if(dbSpeciality != null)
+            {
+                dbSpeciality.UniversityId = speciality.UniversityId;
+                dbSpeciality.FacultyId = speciality.FacultyId;
+                dbSpeciality.SpecialityId = speciality.SpecialityId;
+            }
+            else
+            {
+                context.Specialities.Add(speciality);
+            }
+            context.SaveChanges();
         }
     }
 }

@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace EnrollmentWebApp.Domain.Entities
 {
-    public class Speciality
+    public class Speciality : IEquatable<Speciality>
     {
-        public int SpecialityId { get; set; }
-        public string Name { get; set; }
+        public int Id { get; set; }
+        public int UniversityId { get; set; }
         public int FacultyId { get; set; }
-        public virtual Faculty Faculty { get; set; }
+        public int SpecialityId { get; set; }
+
+        public bool Equals(Speciality obj)
+        {
+            return UniversityId == obj.UniversityId &&
+                   FacultyId == obj.FacultyId &&
+                   SpecialityId == obj.SpecialityId;
+        }
     }
 }

@@ -1,18 +1,20 @@
 ﻿function ajaxSelect(id) {
     var element = document.getElementById(id);
-
+    var mycallback;
     var onLoaded = function (data) {
-        element.options[0] = new Option("не выбрано", 0);
+        element.options[0] = new Option("not selected", -1);
         var i = 0;
         for (; i < data.length; i++) {
             var key = data[i]['key'];
             var value = data[i]['value'];
             element.options[i + 1] = new Option(value, key);
         }
+        if(mycallback != null)
+            mycallback();
     }
 
     var onLoadError = function (error) {
-        var msg = "Ошибка " + error.errcode;
+        var msg = "Error " + error.errcode;
         if (error.message) msg = msg + ' :' + error.message;
         alert(msg);
     }
@@ -40,41 +42,37 @@
             // из-за некорректного JSON
             errinfo.message = xhr.statusText;
         } else {
-            errinfo.message = 'Некорректные данные с сервера';
+            errinfo.message = 'Incorrect server data';
         }
         onLoadError(errinfo);
     }
 
 
     return {
-        load: function (url) {
-            showLoading(true);
-
+        element: element,
+        clear: function() {
             while (element.firstChild) {
                 element.removeChild(element.firstChild);
             }
-
-            $.ajax({ // для краткости - jQuery
-                url: url,
-                contentType: "application/json",
-                dataType: "json",
-                success: onSuccess,
-                error: onAjaxError,
-                cache: false,
-                method: "post"
-            });
         },
-        loadSpec: function(url, value){
+        load: function (url, id, callback) {
+            if (id == -1) {
+                while (element.firstChild) {
+                    element.removeChild(element.firstChild);
+                }
+                return;
+            }
             showLoading(true);
-
+            mycallback = callback;
             while (element.firstChild) {
                 element.removeChild(element.firstChild);
             }
-
             $.ajax({ // для краткости - jQuery
                 url: url,
                 contentType: "application/json",
-                data: JSON.stringify({ "value": value }),
+                data: JSON.stringify({
+                    "id" : id
+                }),
                 dataType: "json",
                 success: onSuccess,
                 error: onAjaxError,

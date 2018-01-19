@@ -14,19 +14,6 @@
     <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
     <script src="~/Scripts/MainTree.js"></script>
     <script src="~/Scripts/Select.js"></script>
-    <script>
-        $(document).ready(function () {
-            tree("tree", "/Admin/LoadNode");
-            var facultySelect = ajaxSelect("facultySelect");
-            var specialitySelect = ajaxSelect("specialitySelect");
-            var x = document.getElementById("facultySelect");
-            facultySelect.load("/Admin/LoadFaculties");
-            document.getElementById("facultySelect").onchange =
-                function () {   
-                    specialitySelect.loadSpec("/Admin/LoadSpecialities", document.getElementById("facultySelect").value);
-                };
-        })
-    </script>
     <title>@ViewBag.Title</title>
 </head>
 <body>

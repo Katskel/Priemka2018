@@ -8,8 +8,8 @@ namespace EnrollmentWebApp.Domain.Entities
 {
     public class TreeNode
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
+        public int NodeId { get; set; }
+        public int DataId { get; set; }
         public int ParentId { get; set; }
     }
 }

@@ -11,26 +11,22 @@ namespace EnrollmentWebApp.Domain.Concrete
     public class EFDbContext : DbContext
     {
         public DbSet<Enrollee> Enrollees { get; set; }
-        public DbSet<Faculty> Faculties { get; set; }
+        public DbSet<SpecialityInfo> SpecialityInfo { get; set; }
         public DbSet<Speciality> Specialities { get; set; }
         public DbSet<TreeNode> TreeNodes { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Enrollee>().ToTable("Enrollees");
-            modelBuilder.Entity<Faculty>().ToTable("Faculties");
-            modelBuilder.Entity<Speciality>().ToTable("Specialities");
             modelBuilder.Entity<TreeNode>().ToTable("TreeNodes");
+            modelBuilder.Entity<Speciality>().ToTable("Specialities");
+            modelBuilder.Entity<SpecialityInfo>().ToTable("SpecialityInfo");
 
             modelBuilder.Entity<Enrollee>().HasKey(en => en.EnrolleeId);
-            modelBuilder.Entity<Faculty>().HasKey(fa => fa.FacultyId);
-            modelBuilder.Entity<Speciality>().HasKey(sp => sp.SpecialityId);
-            modelBuilder.Entity<TreeNode>().HasKey(tn => tn.Id);
+            modelBuilder.Entity<TreeNode>().HasKey(tn => tn.NodeId);
+            modelBuilder.Entity<Speciality>().HasKey(spec => spec.Id);
+            modelBuilder.Entity<SpecialityInfo>().HasKey(specInf => specInf.Id);
 
-            modelBuilder.Entity<Faculty>()
-                .HasMany(fa => fa.Specialities)
-                .WithRequired(sp => sp.Faculty)
-                .HasForeignKey(sp => sp.FacultyId);
         }
     }
 }

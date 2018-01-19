@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace EnrollmentWebApp.Domain.Entities
 {
-    public class Faculty
+    public class SpecialityInfo
     {
-        public int FacultyId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public virtual IList<Speciality> Specialities { get; set; }
+        public int Type { get; set; }
     }
 }

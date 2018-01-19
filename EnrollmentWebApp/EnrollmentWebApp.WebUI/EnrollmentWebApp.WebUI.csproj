@@ -171,6 +171,7 @@
     </Compile>
     <Compile Include="Infrastructure\HtmlHelpers\CreateListHtmlHelper.cs" />
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
+    <Compile Include="Models\EnrolleeEditViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -192,7 +193,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\TreeImages\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EnrollmentWebApp.Domain\EnrollmentWebApp.Domain.csproj">

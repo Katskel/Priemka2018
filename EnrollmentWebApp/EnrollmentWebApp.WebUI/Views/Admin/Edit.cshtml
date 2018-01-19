@@ -1,30 +1,86 @@
-﻿@model EnrollmentWebApp.Domain.Entities.Enrollee
+﻿@model EnrollmentWebApp.WebUI.Models.EnrolleeEditViewModel
 
 @{
-    ViewBag.Title = "Admin: Edit " + @Model.Name;
+    ViewBag.Title = "Admin: Edit " + @Model.enrollee.Surname;
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="panel">
     <div class="panel-heading">
-        <h3>Edit @Model.Name</h3>
+        <h3>Edit @Model.enrollee.Surname</h3>
     </div>
     @using (Html.BeginForm("Edit", "Admin"))
     {
+        @Html.ValidationSummary(true)
         <div class="panel-body">
-            @Html.HiddenFor(m => m.EnrolleeId)
-            @foreach (var property in ViewData.ModelMetadata.Properties)
-            {
-                if (property.PropertyName != "EnrolleeId")
-                {
-                    <div class="form-group">
-                        <label>@(property.DisplayName ?? property.PropertyName)</label>
-                        @Html.TextBox(property.PropertyName, null,
-                            new { @class = "form-control" })
-                        @Html.ValidationMessage(property.PropertyName)
-                    </div>
-                }
-            }
+            @Html.HiddenFor(m => m.enrollee.EnrolleeId)
+            <div class="form-group">
+                <label>Surname</label>
+                @Html.TextBox("enrollee.Surname", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.Surname")
+            </div>
+            <div class="form-group">
+                <label>Name</label>
+                @Html.TextBox("enrollee.Name", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.Name")
+            </div>
+            <div class="form-group">
+                <label>Patronymic</label>
+                @Html.TextBox("enrollee.Patronymic", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.Patronymic")
+            </div>
+            <div class="form-group">
+                <label>Passport</label>
+                @Html.TextBox("enrollee.Passport", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.Passport")
+            </div>
+            <div class="form-group">
+                <label>BirthDate</label>
+                @Html.EditorFor(m => m.enrollee.BirthDate, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>Town</label>
+                @Html.TextBox("enrollee.Town", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.Town")
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                @Html.TextBox("enrollee.Address", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.Address")
+            </div>
+            <div class="form-group">
+                <label>Phone number</label>
+                @Html.TextBox("enrollee.PhoneNumber", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.PhoneNumber")
+            </div>
+            <div class="form-group">
+                <label>CT language</label>
+                @Html.TextBox("enrollee.CTLanguage", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.CTLanguage")
+            </div>
+            <div class="form-group">
+                <label>CT first subject</label>
+                @Html.TextBox("enrollee.CTFirstSubject", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.CTFirstSubject")
+            </div>
+            <div class="form-group">
+                <label>CT second subject</label>
+                @Html.TextBox("enrollee.CTSecondSubject", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.CTFirstSubject")
+            </div>
+            <div class="form-group">
+                <label>Average score</label>
+                @Html.TextBox("enrollee.AverageScore", null, new { @class = "form-control" })
+                @Html.ValidationMessage("enrollee.AverageScore")
+            </div>
+            <div class="form-group">
+                <label>Speciality</label>
+                <div>@Html.DropDownListFor(m => m.speciality.UniversityId, 
+                    new SelectList(new List<object>(), "key", "value" ), 
+                    new { @class = "form-control myown", @id = "universitySelect" })</div>
+                <div>@Html.DropDownListFor(m => m.speciality.FacultyId, new SelectList(new List<object>(), "key", "value"), new { @class = "form-control myown", @id = "facultySelect" })</div>
+                <div>@Html.DropDownListFor(m => m.speciality.SpecialityId, new SelectList(new List<object>(), "key", "value"), new { @class = "form-control myown", @id = "specialitySelect" })</div>
+            </div>
         </div>
         <div class="panel-footer">
             <input type="submit" value="Save" class="btn btn-primary" />
@@ -34,4 +90,31 @@
                 })
         </div>
     }
+    <script>
+        var speciality = @Html.Raw(Json.Encode(Model.speciality));
+        var universitySelect = ajaxSelect("universitySelect");
+        var facultySelect = ajaxSelect("facultySelect");
+        var specialitySelect = ajaxSelect("specialitySelect");
+        var onSpecialitySelectLoaded = function() {
+            specialitySelect.element.value = speciality.SpecialityId;
+        };
+        var onFacultySelectLoaded = function() {
+            facultySelect.element.value = speciality.FacultyId;
+            specialitySelect.load("/Admin/LoadSelectData", facultySelect.element.value, onSpecialitySelectLoaded);
+        };
+        var onUniversitySelectLoaded = function () {
+            universitySelect.element.value = speciality.UniversityId;
+            facultySelect.load("/Admin/LoadSelectData", universitySelect.element.value, onFacultySelectLoaded);
+        };
+        universitySelect.load("/Admin/LoadSelectData", 0, onUniversitySelectLoaded);
+        $(document).ready(function () {
+            universitySelect.element.onchange = function () {
+                facultySelect.load("/Admin/LoadSelectData", universitySelect.element.value, null);
+                specialitySelect.clear();
+            };
+            facultySelect.element.onchange = function () {
+                specialitySelect.load("/Admin/LoadSelectData", facultySelect.element.value, null);
+            };
+        })
+    </script>
 </div>

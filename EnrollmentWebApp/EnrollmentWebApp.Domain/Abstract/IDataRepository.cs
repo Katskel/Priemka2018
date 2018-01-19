@@ -11,10 +11,11 @@ namespace EnrollmentWebApp.Domain.Abstract
     {
         IEnumerable<Enrollee> Enrollees { get; }
         IEnumerable<TreeNode> TreeNodes { get; }
-        IEnumerable<Faculty> Faculties { get; }
+        IEnumerable<SpecialityInfo> SpecialityInfo { get; }
         IEnumerable<Speciality> Specialities { get; }
 
         void SaveEnrollee(Enrollee enrollee);
+        void AddSpeciality(Speciality speciality);
         Enrollee DeleteEnrollee(int enrolleeID);
     }
 }
