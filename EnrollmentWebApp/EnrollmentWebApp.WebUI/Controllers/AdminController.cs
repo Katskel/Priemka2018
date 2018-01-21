@@ -1,5 +1,6 @@
 ﻿using EnrollmentWebApp.Domain.Abstract;
 using EnrollmentWebApp.Domain.Entities;
+using EnrollmentWebApp.WebUI.Infrastructure.HtmlHelpers;
 using EnrollmentWebApp.WebUI.Models;
 using System;
 using System.Collections;
@@ -95,6 +96,32 @@ namespace EnrollmentWebApp.WebUI.Controllers
             {
                 return View(model);
             }
+        }
+
+        [HttpPost]
+        public HtmlString LoadTreeCheckboxData(AjaxTreeDataModel[] model)
+        {
+            if (model == null)
+            {
+                var x = CreateEnrolleeTableHelper.CreateEnrolleeTable(null);
+                return x;
+            }
+            else if ( model[0].Level == 0)
+                return CreateEnrolleeTableHelper.CreateEnrolleeTable(repository.Enrollees.ToList());
+            else
+            {
+                var firstLevel = model.Where(m => m.Level == 1).ToList().Select(m => m.Id);
+                var first = repository.Specialities.Where(s => firstLevel.Contains(s.UniversityId));
+                var secondLevel = model.Where(m => m.Level == 2).ToList().Select(m => m.Id);
+                var second = repository.Specialities.Where(s => secondLevel.Contains(s.FacultyId));
+                var thirdLevel = model.Where(m => m.Level == 3).ToList().Select(m => m.Id);
+                var third = repository.Specialities.Where(s => thirdLevel.Contains(s.SpecialityId));
+                var all = first.Concat(second).Concat(third).Select(a => a.Id);
+                var result = repository.Enrollees.Where(en => all.Contains(en.SpecialityId));
+                return CreateEnrolleeTableHelper.CreateEnrolleeTable(result.ToList());
+            }
+            
+
         }
 
         public ViewResult Create()

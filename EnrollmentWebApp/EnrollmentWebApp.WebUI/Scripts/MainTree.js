@@ -215,3 +215,77 @@
         load(node);
     }
 }
+
+function TreeSearcher() {
+    var data = [];
+    var name;
+
+    function TreeDFS(LiId, level) {
+        var li = $('li[data-id = ' + LiId + ']');
+        var input = $(li).children('input')[0];
+        if (input.checked == true) {
+            var x = {
+                "Id": +li[0].dataset.id,
+                "Level": level
+            }
+            data.push(x);
+        }
+        else if (input.indeterminate == true) {
+            var childLies = $(li).children('ul').children('li');
+            for (var j = 0; j < childLies.length; j++)
+                TreeDFS(childLies[j].dataset.id, level + 1);
+        }
+    };
+
+    function onSuccess(data) {
+        if (!data.errcode) {
+            onLoaded(data);
+        } else {
+            showLoading(false);
+            onLoadError(data);
+        }
+    }
+    function onAjaxError(xhr, status) {
+        var errinfo = { errcode: status };
+        if (xhr.status != 200) {
+            // может быть статус 200, а ошибка
+            // из-за некорректного JSON
+            errinfo.message = xhr.statusText;
+        } else {
+            errinfo.message = 'Некорректные данные с сервера';
+        }
+        onLoadError(errinfo);
+    }
+    function onLoadError(error) {
+        var msg = "Ошибка " + error.errcode;
+        if (error.message)
+            msg = msg + ' :' + error.message;
+        alert(msg);
+    }
+
+    function onLoaded(data) {
+        var div = $('div[name = ' + name + ']');
+        div.empty();
+        var html = $.parseHTML(data)
+        div.append(html);
+    }
+
+    return {
+        loadData: function (divName) {
+            name = divName;
+            TreeDFS(0, 0);
+            $.ajax({
+                url: "/Admin/LoadTreeCheckboxData",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                dataType: "html",
+                success: onSuccess,
+                error: onAjaxError,
+                cache: false,
+                method: "post"
+            });
+        }
+    };
+}
+
+
