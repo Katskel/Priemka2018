@@ -70,7 +70,7 @@ namespace EnrollmentWebApp.WebUI.Controllers
         public ActionResult Edit(EnrolleeEditViewModel model)
         {
             var modelSpeciality = model.speciality;
-            if (modelSpeciality.SpecialityId == -1)
+            if (modelSpeciality.SpecialityId == -1 || modelSpeciality.UniversityId == -1 || modelSpeciality.FacultyId == -1)
                 ModelState.AddModelError("", "Не выбрана специальность");
             else
             {
