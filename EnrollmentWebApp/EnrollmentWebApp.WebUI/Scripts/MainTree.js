@@ -56,16 +56,26 @@
             for (var i = 0; i < data.length; i++) {
                 var child = data[i];
                 var li = document.createElement('LI');
-                li.id = child.Id;
+                li.setAttribute('data-id', child.Id);
 
                 li.className = "Node Expand" + (child.isFolder ? 'Closed' : 'Leaf');
                 if (i == data.length - 1)
                     li.className += ' IsLast';
 
-                li.innerHTML = '<div class="Expand"></div><div class="Content">' + child.Title + '</div>';
-                if (child.isFolder) {
-                    li.innerHTML += '<ul class="Container"></ul>';
+                var stringHTML = '<div class="Expand"></div>';
+                if ($(node).children('input').length !== 0 && $(node).children('input')[0].checked === true) {
+                    stringHTML += '<input type="checkbox" checked="true">';
                 }
+                else {
+                    stringHTML += '<input type="checkbox">';
+                }
+
+                stringHTML += '<div class="Content">' + child.Title + '</div>';
+                if (child.isFolder) {
+                    stringHTML += '<ul class="Container"></ul>';
+                }
+                li.innerHTML = stringHTML;
+
                 node.getElementsByTagName('UL')[0].appendChild(li);
             }
 
@@ -77,7 +87,7 @@
 
         $.ajax({
             url: "/Admin/LoadNode",
-            data: JSON.stringify({ "id": node.id }),
+            data: JSON.stringify({ "id": node.dataset.id }),
             contentType: "application/json",
             dataType: "json",
             success: onSuccess,
@@ -86,11 +96,94 @@
             method: "post"
         });
 
+    };
+
+    function checkParent(checkbox) {
+
+        if ($(checkbox).parents('ul').first().parent().data('id') === -1) {
+            return;
+        }
+
+        var levelState = checkLevel(checkbox);
+        var parent_checkbox = $(checkbox).parents('ul').first().siblings('input')[0];
+        
+        if (levelState == "empty")
+        {
+            parent_checkbox.checked = false;
+            parent_checkbox.indeterminate = false;
+        }
+        else if (levelState == "full")
+        {
+            parent_checkbox.checked = true;
+            parent_checkbox.indeterminate = false;
+        }
+        else if (levelState == "some")
+        {
+            parent_checkbox.checked = false;
+            parent_checkbox.indeterminate = true;
+        }
+        checkParent(parent_checkbox);
+
+    }
+
+    function checkLevel(checkbox) {
+        var lis = $(checkbox).parent().siblings('li');
+        if (lis.length == 0) {
+            if (checkbox.checked == true)
+                return "full";
+            else
+                return "empty";
+        }
+        var numTrue = 0;
+        for (i = 0; i < lis.length; i++) {
+            if ($(lis[i]).children('input')[0].checked === true) {
+                numTrue++;
+            }
+            if ($(lis[i]).children('input')[0].indeterminate == true) {
+                return "some";
+            }
+        }
+
+        if (numTrue === lis.length) {
+            if (checkbox.checked == true)
+                return "full";
+            else
+                return "some";
+        }
+        if (numTrue === 0) {
+            if (checkbox.indeterminate == true)
+                return "some";
+            if (checkbox.checked == true)
+                return "some";
+            else
+                return "empty";
+        }
+        return "some";
+    }
+
+    function checkChild(checkbox) {
+        var isChecked = checkbox.checked;
+        var lis = $(checkbox).siblings('ul').first().children('li');
+        for (var i = 0; i < lis.length; i++) {
+            var child_checkbox = $(lis[i]).children('input')[0];
+            child_checkbox.checked = isChecked;
+            child_checkbox.indeterminate = false;
+            checkChild(child_checkbox);
+        }
+    }
+
+    function checkRelations(checkbox) {
+        checkParent(checkbox);
+        checkChild(checkbox);
     }
 
     element.onclick = function (event) {
         event = event || window.event;
         var clickedElem = event.target || event.srcElement;
+
+        if (clickedElem.type === "checkbox") {
+            checkRelations(clickedElem);
+        }
 
         if (!hasClass(clickedElem, 'Expand')) {
             return; // клик не там
